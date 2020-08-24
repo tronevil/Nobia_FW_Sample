@@ -68,7 +68,7 @@ public class EWEPageObject extends BasePage{
     /**
      * HEINEKEN DEMO METHODS
      */
-    private final By username = By.xpath("/html/body/app-root/account-wrapper/div/div/div/div/div[2]/app-login/form/hot-input[1]/div/div[1]/input123");
+    private final By username = By.xpath("/html/body/app-root/account-wrapper/div/div/div/div/div[2]/app-login/form/hot-input[1]/div/div[1]/input");
     private final By password = By.xpath("/html/body/app-root/account-wrapper/div/div/div/div/div[2]/app-login/form/hot-input[2]/div/div[1]/input");
     private final By LoginBtn = By.xpath("//button[@block='button']");
     private final By menuNewOrder = By.xpath("//span[contains(text(),'New order')]");
