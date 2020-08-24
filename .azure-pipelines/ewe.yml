@@ -15,4 +15,4 @@ pr: none
 steps:
 - template: main.yml
   parameters:
-    testClass: EWE*
+    testClass: HEI_Login
