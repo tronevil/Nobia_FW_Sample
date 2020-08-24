@@ -1,0 +1,59 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+parameters:
+  testClass: ''  # defaults for any parameters that aren't specified
+
+steps:
+  - bash: |
+      echo "##vso[build.updatebuildnumber]Test run for ${{ parameters.testClass }} • Commit named " | sed -e 's/\(*\)*//g'
+    name: SetBuildName
+  - bash: |
+      if [[ -z "${{ parameters.testClass }}" ]]; then
+        exit 1
+      fi
+    name: provide_testClass_value
+
+  - task: ScreenResolutionUtility@1
+    inputs:
+      displaySettings: 'specific'
+      width: '1920'
+      height: '1080'
+      
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m -Dtest=${{ parameters.testClass }}'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'test'
+    continueOnError: true
+    displayName: 'Run Test'
+    
+  - task: CopyFiles@2
+    inputs:
+      Contents: '**\${{ parameters.testClass }}**\**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copying Images folder'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/images'
+      ArtifactName: 'ImageComparisonResult'
+      publishLocation: 'Container'
+    displayName: 'Publishing Image comparison result'
+
+
+#trigger:           # comment: basically all your trigger settings for master / PR etc
+#  branches:
+#    include:
+#    - master
+#
+#
+#pr:
+#- master
